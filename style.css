@@ -45,7 +45,8 @@ button {
 }
 
 button:hover {
-    background: #316606;
+    background: #0066ff92;
+    transition: 0.15s;
 }
 
 h2 {
@@ -58,5 +59,21 @@ ul {
 
 li {
     padding: 8px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddddddb9;
 }
+.delete-btn{
+    width: 25%;
+    padding: 5px;
+    background: rgb(214, 16, 16);
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 30px;
+}
+.delete-btn:hover{
+    background-color: rgb(194, 15, 15);
+    transition: 0.15s;
+}
+

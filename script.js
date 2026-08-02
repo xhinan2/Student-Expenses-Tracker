@@ -1,4 +1,13 @@
 let total = 0;
+let expenses =[];
+let savedExpenses = localStorage.getItem("expenses");
+if(savedExpenses){
+    expenses = JSON.parse(savedExpenses);
+    for (let i = 0; i < expenses.length; i++) {
+    displayExpense(expenses[i],i);
+    }
+    
+}
 
 function addExpense() {
 
@@ -9,17 +18,43 @@ function addExpense() {
         alert("Please fill all fields");
         return;
     }
+    let expense = {
+        name: expenseName,
+        amount: expenseAmount
+    };
+    expenses.push(expense);
+    localStorage.setItem(
+        "expenses",JSON.stringify(expenses)
+    );
 
-    total += Number(expenseAmount);
+    displayExpense(expense);
 
+    
+}
+function displayExpense(expense, index){ 
+     total += Number(expense.amount);
     document.getElementById("total").textContent = total;
+   
+     let li = document.createElement("li");
+    li.textContent = expense.name + " - ₹" + expense.amount ;
 
-    let li = document.createElement("li");
-
-    li.textContent = expenseName + " - ₹" + expenseAmount;
-
+    let deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.className = "delete-btn";
+    
+    li.appendChild(deleteButton);
     document.getElementById("expenseList").appendChild(li);
 
-    document.getElementById("expenseName").value = "";
-    document.getElementById("expenseAmount").value = "";
+    deleteButton.addEventListener("click",function(){
+        document.getElementById("expenseList").removeChild(li);
+        total -= Number(expense.amount);
+        document.getElementById("total").textContent = total;
+        expenses.splice(index, 1);
+        localStorage.setItem(
+            "expenses",
+            JSON.stringify(expenses)
+        );
+    }); 
+          
+
 }
