@@ -1,23 +1,51 @@
 let total = 0;
-let expenses =[];
+let expenses = [];
+
 let savedExpenses = localStorage.getItem("expenses");
+
 if(savedExpenses){
-    expenses = JSON.parse(savedExpenses);
-    for (let i = 0; i < expenses.length; i++) {
-    displayExpense(expenses[i],i);
+    try {
+        expenses = JSON.parse(savedExpenses);
+
+        if (!Array.isArray(expenses)) {
+            throw new Error("Invalid expense data");
+        }
+
     }
-    
+    catch(error) {
+        console.log("Error:", error);
+
+        localStorage.setItem("expenses_backup", savedExpenses);
+
+        localStorage.removeItem("expenses");
+
+        expenses = [];
+
+        alert("Saved expenses could not be loaded!");
+    }
 }
+
+for(let i = 0; i < expenses.length; i++){
+    displayExpense(expenses[i]);
+}
+
 
 function addExpense() {
 
-    let expenseName = document.getElementById("expenseName").value;
-    let expenseAmount = document.getElementById("expenseAmount").value;
+    let expenseName = document.getElementById("expenseName").value.trim();
+    let amountInput = document.getElementById("expenseAmount").value.trim();
+    let expenseAmount = Number(amountInput);
 
-    if (expenseName === "" || expenseAmount === "") {
-        alert("Please fill all fields");
+    if (expenseName === "") {
+        alert("Please Enter Expense Name");
         return;
     }
+
+    if (amountInput ==="" || !Number.isFinite(expenseAmount) || expenseAmount <= 0){
+        alert("Please Enter a Valid Amount");
+        return;
+    }
+
     let expense = {
         name: expenseName,
         amount: expenseAmount
@@ -28,10 +56,12 @@ function addExpense() {
     );
 
     displayExpense(expense);
+    document.getElementById("expenseName").value="";
+    document.getElementById('expenseAmount').value="";
 
     
 }
-function displayExpense(expense, index){ 
+function displayExpense(expense){ 
      total += Number(expense.amount);
     document.getElementById("total").textContent = total;
    
@@ -49,12 +79,14 @@ function displayExpense(expense, index){
         document.getElementById("expenseList").removeChild(li);
         total -= Number(expense.amount);
         document.getElementById("total").textContent = total;
-        expenses.splice(index, 1);
+        let currentIndex = expenses.indexOf(expense);
+        expenses.splice(currentIndex, 1);
         localStorage.setItem(
             "expenses",
             JSON.stringify(expenses)
         );
     }); 
-          
+
+
 
 }
